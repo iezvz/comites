@@ -1,26 +1,35 @@
+// Import necessary libraries
 import 'package:flutter/material.dart';
 import 'package:comites/bd/mongodb.dart';
 import 'package:comites/ui/portada.dart';
 
-void main() async{
+void main() async {
+  // Garantiza que Flutter esté inicializado antes de usar widgets
   WidgetsFlutterBinding.ensureInitialized();
-  
+
+  // Establece la conexión con la base de datos MongoDB Atlas antes de iniciar la aplicación
   await MongoDB.conectar();
-  runApp(const MyApp());  
+
+  // Ejecuta la aplicación con la clase MyApp como raíz
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  // Este widget es el widget raíz de la aplicación
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      // Oculta el banner de modo debug
       debugShowCheckedModeBanner: false,
+      // Título de la aplicación
       title: 'Comites',
+      // Tema de la aplicación (colores primarios)
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),
+      // Widget inicial de la aplicación (pantalla de portada)
       home: const Portada(),
     );
   }

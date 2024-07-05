@@ -1,9 +1,11 @@
+// Importar las bibliotecas necesarias
 import 'package:comites/modelos/persona.dart';
 import 'package:flutter/material.dart';
 import 'package:comites/bd/mongodb.dart';
-import 'package:mongo_dart/mongo_dart.dart' as M;
+import 'package:mongo_dart/mongo_dart.dart' as M; // Alias para mongo_dart
 
 class EditarPersona extends StatefulWidget {
+  // Constructor para recibir argumentos iniciales (si los hay)
   const EditarPersona({super.key});
 
   @override
@@ -11,35 +13,44 @@ class EditarPersona extends StatefulWidget {
 }
 
 class _EditarPersonaState extends State<EditarPersona> {
-  static const EDICION = 1;
-  static const INSERCION = 2;
+  // Definir constantes para operaciones de inserción y edición
+  static const int EDICION = 1;
+  static const int INSERCION = 2;
 
-  TextEditingController nombreController = TextEditingController();
-  TextEditingController edadController = TextEditingController();
-  TextEditingController estadoNacimientoController = TextEditingController();
+  // Controladores de edición de texto para la entrada del usuario
+  final TextEditingController nombreController = TextEditingController();
+  final TextEditingController edadController = TextEditingController();
+  final TextEditingController estadoNacimientoController = TextEditingController();
+
+  // Variables para almacenar el tipo de operación y los datos de la persona (si se edita)
+  int operacion = INSERCION;
+  Persona? persona;
 
   @override
   Widget build(BuildContext context) {
-    var textoWidget = "Añadir Persona";
-    int operacion = INSERCION;
-    Persona? persona;
+    // Establecer el título en función de la operación (agregar o editar)
+    String textoWidget = "Añadir Persona";
     if (ModalRoute.of(context)?.settings.arguments != null) {
       operacion = EDICION;
       persona = ModalRoute.of(context)?.settings.arguments as Persona;
-      nombreController.text = persona.nombre;
-      estadoNacimientoController.text = persona.estadoNacimiento;
-      edadController.text = persona.edad.toString();
+      nombreController.text = persona!.nombre;
+      estadoNacimientoController.text = persona!.estadoNacimiento;
+      edadController.text = persona!.edad.toString();
       textoWidget = "Editar Persona";
     }
+
+    // Construir el andamio de la aplicación
     return Scaffold(
       appBar: AppBar(
         title: Text(textoWidget),
       ),
       body: Stack(
         children: [
+          // SingleChildScrollView para contenido desplazable
           SingleChildScrollView(
             child: Column(
               children: [
+                // Relleno para cada campo de texto
                 Padding(
                   padding: const EdgeInsets.all(8),
                   child: TextField(
@@ -51,59 +62,74 @@ class _EditarPersonaState extends State<EditarPersona> {
                   padding: const EdgeInsets.all(8),
                   child: TextField(
                     controller: edadController,
-                    decoration:
-                        const InputDecoration(labelText: "Edad"),
-                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(labelText: "Edad"),
+                    keyboardType: TextInputType.number, // Forzar entrada numérica
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8),
                   child: TextField(
                     controller: estadoNacimientoController,
-                    decoration:
-                        const InputDecoration(labelText: "Lugar de Nacimiento"),
+                    decoration: const InputDecoration(labelText: "Lugar de Nacimiento"),
                   ),
                 ),
               ],
             ),
           ),
+          // Alinear el botón en el centro inferior
           Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
-                  child: ElevatedButton(
-                      child: Text(textoWidget),
-                      onPressed: () {
-                        if (operacion == EDICION) {
-                          _actualizarPersona(persona!);
-                        } else {
-                          _insertarPersona();
-                        }
-                        Navigator.pop(context);
-                      })))
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+              child: ElevatedButton(
+                child: Text(textoWidget),
+                onPressed: () {
+                  // Llamar a la función adecuada según la operación
+                  if (operacion == EDICION) {
+                    _actualizarPersona(persona!);
+                  } else {
+                    _insertarPersona();
+                  }
+                  // Hacer estallar la pantalla después de la operación
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
+  // Función para insertar una nueva persona
   _insertarPersona() async {
+    // Crear un nuevo objeto Persona con datos de los campos de texto
     final persona = Persona(
-        id: M.ObjectId(),
-        nombre: nombreController.text,
-        estadoNacimiento: estadoNacimientoController.text,
-        edad: int.parse(edadController.text));
+      id: M.ObjectId(),
+      nombre: nombreController.text,
+      estadoNacimiento: estadoNacimientoController.text,
+      edad: int.parse(edadController.text),
+    );
+    // Llamar a MongoDB.insertar para insertar a la persona en la base de datos
     await MongoDB.insertar(persona);
   }
 
+  // Función para actualizar una persona existente
   _actualizarPersona(Persona persona) async {
+    // Crear un nuevo objeto Persona con datos actualizados
     final p = Persona(
-        id: persona.id,
-        nombre: nombreController.text,
-        estadoNacimiento: estadoNacimientoController.text,
-        edad: int.parse(edadController.text));
+      id: persona.id,
+      nombre: nombreController.text,
+      estadoNacimiento: estadoNacimientoController.text,
+      edad: int.parse(edadController.text),
+    );
+    //
+
+    // Call MongoDB.actualizar to update the person in the database
     await MongoDB.actualizar(p);
   }
 
+  // Dispose of text editing controllers when the widget is disposed
   @override
   void dispose() {
     super.dispose();
