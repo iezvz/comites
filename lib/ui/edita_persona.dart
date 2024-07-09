@@ -127,9 +127,10 @@ class _EditarPersonaState extends State<EditarPersona> {
 
     // Call MongoDB.actualizar to update the person in the database
     await MongoDB.actualizar(p);
+
   }
 
-  // Dispose of text editing controllers when the widget is disposed
+  // liberar recursos
   @override
   void dispose() {
     super.dispose();

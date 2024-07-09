@@ -1,4 +1,4 @@
-const CONEXION="mongodb+srv://usuarioUTAgs:UTAgs2024@cluster0.rnaf4nc.mongodb.net/PersonasBD?tls=true&authSource=admin";
+const CONEXION="mongodb+srv://usuarioUTAgs:UTAgs2024@cluster0.rnaf4nc.mongodb.net/PersonasBB?retryWrites=true&w=majority&appName=Cluster0";
 const COLECCION="personas";
 /*
 1. CONEXION:

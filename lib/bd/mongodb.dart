@@ -8,11 +8,13 @@ class MongoDB {
   static var bd, coleccionPersonas;
 
   // Función para establecer la conexión con la base de datos MongoDB Atlas
-  static Future<void> conectar() async {
+  static  conectar() async {
     // Crea una instancia de la base de datos utilizando la URL de conexión
     bd = await Db.create(CONEXION);
     // Abre la conexión con la base de datos
-    await bd.open();
+    //await bd.open();
+    await bd.open(secure: true);
+
     // Obtiene una referencia a la colección de personas
     coleccionPersonas = bd.collection(COLECCION);
   }

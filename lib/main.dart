@@ -1,8 +1,8 @@
 // Import necessary libraries
-import 'package:flutter/material.dart';
+
 import 'package:comites/bd/mongodb.dart';
 import 'package:comites/ui/portada.dart';
-
+import 'package:flutter/material.dart';
 void main() async {
   // Garantiza que Flutter esté inicializado antes de usar widgets
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blueGrey,
       ),
       // Widget inicial de la aplicación (pantalla de portada)
-      home: const Portada(),
+      home:  Portada(),
     );
   }
 }
