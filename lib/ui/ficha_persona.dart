@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class FichaPersona extends StatelessWidget {
 
-  const FichaPersona({required this.persona, required this.onTapDelete, required this.onTapEdit});
+  const FichaPersona({super.key, required this.persona, required this.onTapDelete, required this.onTapEdit});
   final Persona persona;
   final VoidCallback onTapEdit, onTapDelete;
 

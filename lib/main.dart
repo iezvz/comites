@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blueGrey,
       ),
       // Widget inicial de la aplicación (pantalla de portada)
-      home:  Portada(),
+      home:  const Portada(),
     );
   }
 }

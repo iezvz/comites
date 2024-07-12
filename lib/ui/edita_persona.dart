@@ -20,7 +20,8 @@ class _EditarPersonaState extends State<EditarPersona> {
   // Controladores de edición de texto para la entrada del usuario
   final TextEditingController nombreController = TextEditingController();
   final TextEditingController edadController = TextEditingController();
-  final TextEditingController estadoNacimientoController = TextEditingController();
+  final TextEditingController estadoNacimientoController =
+      TextEditingController();
 
   // Variables para almacenar el tipo de operación y los datos de la persona (si se edita)
   int operacion = INSERCION;
@@ -63,14 +64,16 @@ class _EditarPersonaState extends State<EditarPersona> {
                   child: TextField(
                     controller: edadController,
                     decoration: const InputDecoration(labelText: "Edad"),
-                    keyboardType: TextInputType.number, // Forzar entrada numérica
+                    keyboardType:
+                        TextInputType.number, // Forzar entrada numérica
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8),
                   child: TextField(
                     controller: estadoNacimientoController,
-                    decoration: const InputDecoration(labelText: "Lugar de Nacimiento"),
+                    decoration:
+                        const InputDecoration(labelText: "Lugar de Nacimiento"),
                   ),
                 ),
               ],
@@ -114,21 +117,51 @@ class _EditarPersonaState extends State<EditarPersona> {
     await MongoDB.insertar(persona);
   }
 
-  // Función para actualizar una persona existente
   _actualizarPersona(Persona persona) async {
-    // Crear un nuevo objeto Persona con datos actualizados
-    final p = Persona(
-      id: persona.id,
-      nombre: nombreController.text,
-      estadoNacimiento: estadoNacimientoController.text,
-      edad: int.parse(edadController.text),
-    );
-    //
+  // Crear un nuevo objeto Persona con datos actualizados
+  debugPrint(persona.id.toString());
+  final p = Persona(
+    id: persona.id,
+    nombre: nombreController.text,
+    estadoNacimiento: estadoNacimientoController.text,
+    edad: int.parse(edadController.text),
+  );
 
-    // Call MongoDB.actualizar to update the person in the database
-    await MongoDB.actualizar(p);
+  // Establecer límites de reintento
+  const int maxReintentos = 3;
+  int intentos = 0;
 
+  // Attempt to update the person in the database
+  while (intentos < maxReintentos) {
+    try {
+      await MongoDB.actualizar(p);
+      debugPrint("Persona actualizada correctamente");
+      return; // Actualización exitosa
+    } catch (error) {
+      // Manejar la excepción
+      if (error is MongoConnectionException) {
+        debugPrint("Error de conexión: ${error.toString()}");
+
+        // Reabrir la conexión
+        await MongoDB.conectar();
+
+        // Reintentar la actualización
+        intentos++;
+        continue;
+      } else {
+        // Manejar otros errores
+        debugPrint("Error al actualizar persona: ${error.toString()}");
+        // Handle the error appropriately (e.g., display error message)
+        return; // Actualización fallida
+      }
+    }
   }
+
+  // Si se alcanza el límite de reintentos, marcar la actualización como fallida
+  debugPrint("Error: Se alcanzó el límite de reintentos para actualizar la persona");
+  // Handle the error appropriately (e.g., display error message)
+}
+
 
   // liberar recursos
   @override

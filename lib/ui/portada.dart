@@ -6,6 +6,8 @@ import 'package:comites/modelos/persona.dart';
 import 'package:comites/ui/ficha_persona.dart';
 
 class Portada extends StatefulWidget {
+  const Portada({super.key});
+
   @override
   _PortadaState createState() => _PortadaState();
 }
@@ -56,7 +58,7 @@ class _PortadaState extends State<Portada> {
               Navigator.push(context,
               MaterialPageRoute(
               builder: (BuildContext context) {
-                return EditarPersona();
+                return const EditarPersona();
               },
               settings: RouteSettings(
                 arguments: Persona.fromMap(snapshot.data[index]),
@@ -71,7 +73,7 @@ class _PortadaState extends State<Portada> {
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-                  return EditarPersona();
+                  return const EditarPersona();
                 })).then((value) => setState(() {}));
               },
               child: const Icon(Icons.add),
